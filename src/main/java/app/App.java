@@ -1,11 +1,32 @@
 package app;
 
+import controller.CriancaController;
+import controller.ResponsavelController;
+import controller.RotinaController;
+import controller.UserController;
+import dao.UserDAO;
 import static spark.Spark.get;
 import static spark.Spark.port;
+import static spark.Spark.staticFiles;
 
 public class App {
     public static void main(String[] args) {
-        port(8080);  // Define a porta 8080 para o servidor Spark
-        get("/", (req, res) -> "Hello World!");
+        // Define a porta do servidor
+        port(8081);
+
+        staticFiles.location("/public");
+
+
+        get("/", (req, res) -> "Servidor rodando!");
+        // Cria a tabela User, se necessário
+        UserDAO userDAO = new UserDAO();
+        userDAO.createTable();
+
+        // Instancia os controllers que configuram as rotas
+        new ResponsavelController();
+        new CriancaController();
+        RotinaController.configurarRotas();
+        UserController.configurarRotas();
+        System.out.println("Servidor rodando em http://localhost:8081/");
     }
 }
